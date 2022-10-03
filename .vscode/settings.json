@@ -1,0 +1,10 @@
+{
+    "cSpell.words": ["linkedlist"],
+    "files.associations": {
+        "*.ejs": "html",
+        "*.hbs": "handlebars",
+        "stdio.h": "c",
+        "stdbool.h": "c",
+        "string.h": "c"
+    }
+}

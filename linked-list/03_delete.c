@@ -13,46 +13,81 @@ void printLinkedList(struct Node *node);
 void push(struct Node **head_ref, int new_data);
 void insertAfter(struct Node *prev_node, int new_data);
 void append(struct Node **head_ref, int new_data);
+bool search(struct Node *head, int target);
+bool search_recursive(struct Node *head, int target);
 
-bool search(struct Node *head, int target)
+void printLLWithAddresses(struct Node *head)
 {
-    struct Node *current = head;
-    while (current != NULL)
+    while (head)
     {
-        if (current->data == target)
-            return true;
-        current = current->next;
+        printf("[ %i, nxt 0x%x] addr (0x%x) \n", head->data, head->next, head);
+        head = head->next;
     }
-    return false;
+    printf("\n");
 }
 
-bool searchRecursive(struct Node *head, int target)
+int size(struct Node *head)
 {
-    if (head == NULL)
-        return false;
+    int count = 0;
+    while (head != NULL)
+    {
+        count++;
+        head = head->next;
+    }
+    return count;
+}
 
-    if (head->data == target)
-        return true;
+void deleteNode(struct Node **head_ref, int position)
+{
+    struct Node *temp;
+    struct Node *prev;
+    temp = *head_ref;
+    prev = *head_ref;
 
-    return searchRecursive(head->next, target);
+    for (int i = 0; i < position; i++)
+    {
+        if (i == 0 && position == 1)
+        {
+            *head_ref = (*head_ref)->next;
+            free(temp);
+            return;
+        }
+        else
+        {
+            if (i == position - 1 && temp)
+            {
+                prev->next = temp->next;
+                free(temp);
+                return;
+            }
+            else
+            {
+                prev = temp;
+                if (prev == NULL)
+                    return;
+                temp = temp->next;
+            }
+        }
+    }
 }
 
 int main(int argc, char const *argv[])
 {
     struct Node *head = NULL;
 
-    append(&head, 2);
+    append(&head, 12);
     push(&head, 12);
     push(&head, 11);
-    push(&head, 9);
+    push(&head, 19);
     append(&head, 71);
     insertAfter(head->next->next, 13);
     printLinkedList(head);
 
-    search(head, 69) ? printf("%d is present \n", 69) : printf("%d is not present \n", 69);
-    search(head, 9) ? printf("%d is present \n", 9) : printf("%d is not present \n", 9);
-    search_recursive(head, 71) ? printf("%d is present \n", 71) : printf("%d is not present \n", 71);
-    search_recursive(head, 17) ? printf("%d is present \n", 17) : printf("%d is not present \n", 17);
+    printLLWithAddresses(head);
+    printf("size is %d\n", size(head));
+    printLinkedList(head);
+    deleteNode(&head, 3);
+    printLinkedList(head);
 
     return 0;
 }
@@ -116,4 +151,27 @@ void append(struct Node **head_ref, int new_data)
 
     last->next = new_node;
     return;
+}
+
+bool search(struct Node *head, int target)
+{
+    struct Node *current = head;
+    while (current != NULL)
+    {
+        if (current->data == target)
+            return true;
+        current = current->next;
+    }
+    return false;
+}
+
+bool search_recursive(struct Node *head, int target)
+{
+    if (head == NULL)
+        return false;
+
+    if (head->data == target)
+        return true;
+
+    return search_recursive(head->next, target);
 }
